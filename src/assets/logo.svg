@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Premium Dark Background Gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#12131C" />
+      <stop offset="100%" stop-color="#050508" />
+    </linearGradient>
+
+    <!-- Top Face Gradient (Cyan to Blue) -->
+    <linearGradient id="grad-top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F2FE" />
+      <stop offset="100%" stop-color="#4FACFE" />
+    </linearGradient>
+
+    <!-- Right Face Gradient (Pink to Purple) -->
+    <linearGradient id="grad-right" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF0844" />
+      <stop offset="100%" stop-color="#FFB199" />
+    </linearGradient>
+
+    <!-- Left Face Gradient (Indigo to Purple) -->
+    <linearGradient id="grad-left" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#667EEA" />
+      <stop offset="100%" stop-color="#764BA2" />
+    </linearGradient>
+
+    <!-- Drop Shadows for 3D Layering -->
+    <filter id="shadow-top" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#00F2FE" flood-opacity="0.25" />
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+
+    <filter id="shadow-right" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="-12" dy="8" stdDeviation="16" flood-color="#FF0844" flood-opacity="0.2" />
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+
+    <filter id="shadow-left" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="12" dy="8" stdDeviation="16" flood-color="#667EEA" flood-opacity="0.2" />
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+
+    <!-- Glow for Nodes -->
+    <filter id="glow-node" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- App Icon Base -->
+  <rect width="512" height="512" rx="115" fill="url(#bg)" />
+  
+  <!-- Subtle inner glassmorphic border -->
+  <rect width="510" height="510" x="1" y="1" rx="114" fill="none" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="2" />
+
+  <!-- Geometric Exploding Mesh (Lattice Mark) -->
+  <g transform="translate(0, 5)">
+    <!-- Left Face -->
+    <path 
+      d="M 239 266 L 239 398 L 125 332 L 125 200 Z" 
+      fill="url(#grad-left)" 
+      stroke="url(#grad-left)" 
+      stroke-width="16" 
+      stroke-linejoin="round"
+      filter="url(#shadow-left)"
+    />
+
+    <!-- Right Face -->
+    <path 
+      d="M 273 266 L 387 200 L 387 332 L 273 398 Z" 
+      fill="url(#grad-right)" 
+      stroke="url(#grad-right)" 
+      stroke-width="16" 
+      stroke-linejoin="round"
+      filter="url(#shadow-right)"
+    />
+
+    <!-- Top Face (Overlaps the bottom two for depth) -->
+    <path 
+      d="M 256 100 L 370 166 L 256 232 L 142 166 Z" 
+      fill="url(#grad-top)" 
+      stroke="url(#grad-top)" 
+      stroke-width="16" 
+      stroke-linejoin="round"
+      filter="url(#shadow-top)"
+    />
+
+    <!-- Network Nodes (The "Branching" concept) -->
+    <g filter="url(#glow-node)">
+      <!-- Top Node -->
+      <circle cx="256" cy="100" r="12" fill="#FFFFFF" />
+      
+      <!-- Bottom Left Node -->
+      <circle cx="125" cy="332" r="12" fill="#FFFFFF" />
+      
+      <!-- Bottom Right Node -->
+      <circle cx="387" cy="332" r="12" fill="#FFFFFF" />
+
+      <!-- Center Hub Node -->
+      <circle cx="256" cy="232" r="14" fill="#FFFFFF" />
+    </g>
+
+    <!-- Decorative Inner Connections -->
+    <path d="M 256 100 L 256 232" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="4" stroke-linecap="round" />
+    <path d="M 125 332 L 239 266" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="4" stroke-linecap="round" />
+    <path d="M 387 332 L 273 266" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="4" stroke-linecap="round" />
+  </g>
+</svg>

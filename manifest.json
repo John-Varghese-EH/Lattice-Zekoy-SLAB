@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Lattice / Lattice",
+  "version": "1.0.0",
+  "description": "Context-Aware Per-Tab AI Sidekick + Visual Mind-Mapping Browser",
+  "permissions": [
+    "tabs",
+    "storage",
+    "sidePanel",
+    "activeTab",
+    "scripting",
+    "declarativeNetRequest",
+    "alarms",
+    "tabGroups"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "icons": {
+    "16": "logo-16.png",
+    "48": "logo-48.png",
+    "128": "logo-128.png"
+  },
+  "background": {
+    "service_worker": "src/background/service_worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content_script.js"]
+    },
+    {
+      "matches": ["*://chatgpt.com/*", "*://claude.ai/*", "*://gemini.google.com/*"],
+      "js": ["src/content/ai_platform_injector.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "options_page": "src/options/index.html",
+  "action": {
+    "default_title": "Open Lattice"
+  }
+}

@@ -1,50 +1,26 @@
-node_modules/
-dist/
-!extension/dist/
-*.tsbuildinfo
-hosted-contract.json
-plugin-command-manifest.json
-.webcmd/
-.superpowers/
-.worktrees/
-.agents/*
-!.agents/plugins/
-.agents/plugins/*
-!.agents/plugins/marketplace.json
-.mcp.json
+# Logs
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-
-# Local-only research, examples, and agent planning artifacts
-autoresearch/
-cases/
-designs/
-docs/superpowers/
-instagram-test/
-llms.txt
-sitemaps/
-
-# Extensions & Secrets
-*.pem
-*.crx
-*.zip
-.envrc
-.windsurf
-.claude
-.cortex
-
-# Database files
-*.db
-autoresearch-results.tsv
-
-# webcmd benchmarks (dataset comparison harness)
-benchmarks/results/
-benchmarks/.venv/
-benchmarks/node_modules/
-benchmarks/**/__pycache__/
-benchmarks/.pytest_cache/
-benchmarks/pytest-cache-files-*
-benchmarks/datasets/*.json
-!benchmarks/datasets/Stealth_Webcmd.json
-benchmarks/.playwright-cli/
-benchmarks/.playwright/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+/reference
+.env

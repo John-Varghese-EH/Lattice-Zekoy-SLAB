@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius-base: var(--radius);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-lg: calc(var(--radius) + 8px);
+  --radius-full: 9999px;
+}
+
+@layer base {
+  /* LIGHT MODE (Apple Premium Base) */
+  :root {
+    /* iOS/macOS Light Mode Palette */
+    --background: #f5f5f7; /* Apple's exact light gray background */
+    --surface: #ffffff;
+    --surface-hover: #fcfcfc;
+    --surface-active: #f0f0f0;
+    
+    /* High Contrast Typography */
+    --ink: #1d1d1f; /* Apple's deep gray-black for text */
+    --ink-muted: #86868b; /* Apple Gray */
+    --ink-faint: #d2d2d7; 
+    
+    /* Structural Lines */
+    --line: #e5e5ea;
+    --line-strong: #c7c7cc;
+    
+    /* Signature Accent: iOS Blue */
+    --accent: #0066cc; /* Slightly deeper Apple blue for better contrast */
+    --accent-hover: #005bb5;
+    --accent-ink: #ffffff;
+
+    /* Base Geometry - Apple G2 Continuous Curve Approximation */
+    --radius: 16px;
+  }
+
+  /* DARK MODE (Apple Premium) */
+  .dark {
+    /* iOS/macOS Dark Mode Palette */
+    --background: #000000;
+    --surface: #1c1c1e;
+    --surface-hover: #2c2c2e;
+    --surface-active: #3a3a3c;
+    
+    /* High Contrast Typography */
+    --ink: #f5f5f7;
+    --ink-muted: #86868b;
+    --ink-faint: #424245;
+    
+    /* Structural Lines */
+    --line: #38383a;
+    --line-strong: #48484a;
+    
+    /* Signature Accent: iOS Blue */
+    --accent: #2997ff;
+    --accent-hover: #147ce5;
+    --accent-ink: #ffffff;
+  }
+
+  html, body, #root {
+    height: 100%;
+    font-family: var(--font-sans);
+    background: var(--background);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: clamp(14px, 1cqi, 16px);
+    letter-spacing: -0.015em; /* Apple-like tight tracking */
+  }
+
+  * { 
+    box-sizing: border-box; 
+    border-color: var(--line);
+  }
+
+  /* Accessible Focus States */
+  *:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* G2 Continuous Curve / Squircle Geometry Approximation */
+  .squircle {
+    border-radius: var(--radius);
+  }
+  
+  .squircle-lg {
+    border-radius: var(--radius-lg);
+  }
+
+  /* Glassmorphism - Premium Apple Blur */
+  .glass-panel {
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+    backdrop-filter: blur(40px) saturate(150%);
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+    border: 0.5px solid color-mix(in srgb, var(--line) 50%, transparent);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Scrollbars - Elegant & Unobtrusive */
+  .scrollbar-hide { 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+  }
+  .scrollbar-hide::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  /* Typography Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  .tracking-tight-head {
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Animations */
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-hover) 25%,
+    var(--line) 50%,
+    var(--surface-hover) 75%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 2s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* Base interactive transitions */
+button, a, input, select, textarea {
+  transition-property: color, background-color, border-color, outline-color, transform, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* React Flow Theme Overrides */
+.react-flow__controls-button {
+  background-color: var(--surface) !important;
+  border-color: var(--line) !important;
+  fill: var(--ink) !important;
+  transition: all 150ms ease;
+}
+
+.react-flow__controls-button:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+.react-flow__minimap {
+  background-color: var(--background) !important;
+}
+
+.react-flow__minimap-mask {
+  fill: var(--surface) !important;
+  opacity: 0.8 !important;
+}
