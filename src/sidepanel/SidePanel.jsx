@@ -81,25 +81,42 @@ export function SidePanel() {
           
           setMessages(prev => [...prev, planMsg]);
 
+          let chatReplies = [];
           for (let i = 0; i < planResponse.data.plan.length; i++) {
             const step = planResponse.data.plan[i];
             setMessages(prev => prev.map(m => m.id === planMsg.id ? { ...m, currentStepIndex: i } : m));
             await new Promise(resolve => setTimeout(resolve, 800));
 
-            const execRes = await browser.runtime.sendMessage({
-              type: 'WEBCMD_EXEC_STEP',
-              tabId: activeTab?.id,
-              action: step.action
-            });
-            
-            if (execRes && execRes.status === 'error') {
-              setMessages(prev => prev.map(m => m.id === planMsg.id ? { ...m, error: execRes.error, completed: true } : m));
-              break; // Stop execution on error
+            // Handle chat steps locally instead of sending to service worker
+            if (step.action && step.action.type === 'chat') {
+              if (step.action.message) chatReplies.push(step.action.message);
+              await new Promise(resolve => setTimeout(resolve, 300));
+              continue;
+            }
+
+            try {
+              const execRes = await browser.runtime.sendMessage({
+                type: 'WEBCMD_EXEC_STEP',
+                tabId: activeTab?.id,
+                action: step.action
+              });
+              
+              if (execRes && execRes.status === 'error') {
+                setMessages(prev => prev.map(m => m.id === planMsg.id ? { ...m, error: execRes.error, completed: true } : m));
+                break;
+              }
+            } catch (stepErr) {
+              setMessages(prev => prev.map(m => m.id === planMsg.id ? { ...m, error: stepErr.message, completed: true } : m));
+              break;
             }
             
             await new Promise(resolve => setTimeout(resolve, 500));
           }
           setMessages(prev => prev.map(m => m.id === planMsg.id && !m.error ? { ...m, completed: true } : m));
+          // Show any chat replies collected from the plan
+          if (chatReplies.length > 0) {
+            setMessages(prev => [...prev, { id: Date.now() + 2, role: 'assistant', content: chatReplies.join('\n\n') }]);
+          }
 
         } else {
           setMessages(prev => [...prev, { id: Date.now() + 1, role: 'assistant', content: `Could not formulate a plan: ${planResponse?.error}` }]);
@@ -109,7 +126,9 @@ export function SidePanel() {
           type: 'CHAT_COMPLETION',
           tabId: activeTab?.id,
           nodeId: activeNodeId,
-          messages: newMessages.map(m => ({ role: m.role, content: m.content }))
+          messages: newMessages
+            .filter(m => (m.role === 'user' || m.role === 'assistant') && m.content)
+            .map(m => ({ role: m.role, content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content) }))
         });
 
         if (response && response.status === 'success') {
@@ -277,17 +296,22 @@ export function SidePanel() {
                             <p className="text-[13px] text-ink-muted mb-4 italic leading-relaxed">"{msg.thought}"</p>
                             <div className="flex flex-col gap-3">
                               {msg.plan.map((step, i) => {
-                                const isPast = i < msg.currentStepIndex;
-                                const isCurrent = i === msg.currentStepIndex;
+                                const isDone = msg.completed || i < msg.currentStepIndex;
+                                const isCurrent = !msg.completed && i === msg.currentStepIndex;
                                 return (
-                                  <div key={i} className={`flex items-start gap-2.5 text-[12px] transition-all duration-300 ${isPast ? 'opacity-40' : isCurrent ? 'text-accent font-medium' : 'text-ink-muted'}`}>
+                                  <div key={i} className={`flex items-start gap-2.5 text-[12px] transition-all duration-300 ${isDone ? 'text-green-500 opacity-70' : isCurrent ? 'text-accent font-medium' : 'text-ink-muted'}`}>
                                     <div className="mt-0.5 shrink-0 flex items-center justify-center w-3">
-                                      {isPast ? "✓" : isCurrent ? <span className="flex h-1.5 w-1.5 rounded-full bg-accent animate-ping" /> : "•"}
+                                      {isDone ? "✓" : isCurrent ? <span className="flex h-1.5 w-1.5 rounded-full bg-accent animate-ping" /> : "•"}
                                     </div>
                                     <span className="leading-snug">{step.thought}</span>
                                   </div>
                                 );
                               })}
+                              {msg.completed && !msg.error && (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-1 text-[11px] text-green-500 font-medium">
+                                  All steps completed successfully.
+                                </motion.div>
+                              )}
                               
                               {msg.error && (
                                 <motion.div 
